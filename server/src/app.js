@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const recipesRouter = require('./routes/recipes');
 const tagsRouter = require('./routes/tags');
+const authRouter = require('./routes/auth');
 
 function createApp() {
   const app = express();
@@ -11,6 +12,7 @@ function createApp() {
   app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
   app.use('/api/recipes', recipesRouter);
   app.use('/api/tags', tagsRouter);
+  app.use('/api', authRouter);
 
   // 404 handler
   app.use((req, res) => res.status(404).json({ error: 'Not found' }));

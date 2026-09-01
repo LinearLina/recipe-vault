@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db');
+const requireAuth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -92,7 +93,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST /api/recipes
-router.post('/', async (req, res, next) => {
+router.post('/', requireAuth,async (req, res, next) => {
   const client = await db.pool.connect();
   try {
     const errors = validateRecipeBody(req.body);
@@ -113,7 +114,7 @@ router.post('/', async (req, res, next) => {
     await client.query('BEGIN');
 
     const recipeResult = await client.query(
-      `INSERT INTO recipes (title, description, instructions, prep_minutes, cook_minutes, servings, image_url)
+      `INSERT INTO recipes (title, description, instructions, prep_minutes, cook_minutes, servings, image_url, user_id)
        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
       [title, description, instructions, prep_minutes, cook_minutes, servings, image_url]
     );
@@ -150,7 +151,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // PUT /api/recipes/:id
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const errors = validateRecipeBody(req.body);
@@ -184,7 +185,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // DELETE /api/recipes/:id
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await db.query('DELETE FROM recipes WHERE id = $1 RETURNING id', [
