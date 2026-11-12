@@ -1,0 +1,19 @@
+# Node
+node_modules/
+dist/
+.env
+*.log
+test-results/
+playwright-report/
+
+# .NET
+bin/
+obj/
+TestResults/
+*.user
+.vs/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

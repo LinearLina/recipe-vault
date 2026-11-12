@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\RecipeVault.Application\RecipeVault.Application.csproj" />
+    <ProjectReference Include="..\RecipeVault.Domain\RecipeVault.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- For PasswordHasher (Microsoft.Extensions.Identity.Core ships in the ASP.NET Core shared framework) -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+</Project>
