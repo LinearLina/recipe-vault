@@ -138,16 +138,19 @@ Errors are `{ "error": "message" }`, or `{ "errors": ["message", ...] }` for val
 
 ## How I used AI-assisted development
 
-<!--
-  ✍️ Write this section yourself, in your own words, before sharing the repo.
-  Interviewers will ask about it. Prompts to answer:
+I used Claude to help port the API from Express to ASP.NET Core, write the tests and draft the docs (ADRs and the tech-debt log). I made the main decisions: keeping the existing JSON contract so the React client didn't need to change, and fixing the bugs we found in the Express code as part of the migration.
 
-  1. What I delegated to AI (e.g. scaffolding, first drafts of EF configuration and tests)
-  2. What I decided or did myself, and why (architecture, which bugs to fix, ...)
-  3. How I reviewed AI output: read every line, ran the tests, checked it against CLAUDE.md
-  4. One or two concrete times I rejected or changed what the AI produced, and why
-  5. What I'd do differently next time
--->
+How I checked the AI's work
+- Ran all the automated tests myself (47 unit and integration tests) and made sure CI passed
+- Tested the app by hand, including each bug fix and the ownership rules, using two separate users to confirm one user can't delete another's recipe
+- Set up and debugged the dev environment myself, including getting SQL Server running in GitHub Codespaces since it doesn't run on macOS
+
+What I questioned or changed
+- Spotted during testing that the Edit and Delete buttons show for recipes you don't own. The API blocks the action, but the UI shouldn't offer it, so I logged it as tech debt.
+- When an E2E test failed in CI, I investigated and found a race condition in the test (it typed before the form had loaded), not a bug in the app
+
+Keeping AI changes consistent
+`CLAUDE.md` sets out the architecture rules, conventions and testing expectations I review AI-generated changes against, and the PR template asks how AI was used and checked on every change.
 
 _Coming soon._
 
@@ -156,6 +159,6 @@ _Coming soon._
 - Port the client to **Angular + TypeScript**, then move errors to ProblemDetails
 - Pagination on the recipe list
 - Recipe costing and a costed shopping list
-- A per-recipe assistant you can ask questions (RAG over each recipe)
+- A per-recipe assistant you can ask questions 
 
 See [docs/tech-debt.md](docs/tech-debt.md) for the full list of known gaps.
