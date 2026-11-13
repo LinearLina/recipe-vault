@@ -1,0 +1,21 @@
+{
+  "name": "Recipe Vault (.NET 10 + SQL Server + Node)",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:2": { "version": "10.0" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" }
+  },
+  "forwardPorts": [5173, 4000],
+  "portsAttributes": {
+    "5173": { "label": "Website", "onAutoForward": "notify" },
+    "4000": { "label": "API", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-dotnettools.csdevkit", "ms-playwright.playwright", "humao.rest-client"]
+    }
+  }
+}

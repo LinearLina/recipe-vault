@@ -1,15 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { logInAsNewUser } from './helpers.js';
 
-// These tests assume the API (port 4000) and client (port 5173) are already
-// running against a Postgres instance, e.g. via docker-compose + npm run dev
-// in both server/ and client/.
+// playwright.config.js starts the .NET API (port 4000) and the Vite client (port 5173)
+// unless they are already running.
 
 test('home page loads and shows the recipe box heading', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'The recipe box' })).toBeVisible();
 });
 
-test('can create a recipe end to end and see it in the list', async ({ page }) => {
+test('can create a recipe end to end and see it in the list', async ({ page, request }) => {
+  await logInAsNewUser(page, request);
   const title = `Playwright Test Bake ${Date.now()}`;
 
   await page.goto('/');
@@ -42,7 +43,8 @@ test('can filter recipes by tag', async ({ page }) => {
   }
 });
 
-test('deleting a recipe removes it from the list', async ({ page }) => {
+test('deleting a recipe removes it from the list', async ({ page, request }) => {
+  await logInAsNewUser(page, request);
   const title = `Deletable Recipe ${Date.now()}`;
 
   await page.goto('/recipes/new');
@@ -57,4 +59,40 @@ test('deleting a recipe removes it from the list', async ({ page }) => {
   await page.getByRole('button', { name: 'Delete' }).click();
 
   await expect(page).toHaveURL('/');
+});
+
+test('editing a recipe keeps ingredient and tag changes', async ({ page, request }) => {
+  // Regression test: the Express API used to drop ingredient and tag edits silently.
+  await logInAsNewUser(page, request);
+  const title = `Editable Recipe ${Date.now()}`;
+
+  await page.goto('/recipes/new');
+  await page.getByLabel('Title').fill(title);
+  await page.getByPlaceholder('flour').fill('flour');
+  await page.getByPlaceholder('quick, vegetarian').fill('quick');
+  await page.locator('textarea').fill('Mix and bake.');
+  await page.getByRole('button', { name: 'Save recipe' }).click();
+  await expect(page.getByRole('heading', { name: title })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Edit' }).click();
+  // The edit form loads the recipe after it opens. Wait for that, or the load overwrites what we type.
+  await expect(page.getByLabel('Title')).toHaveValue(title);
+  await expect(page.getByPlaceholder('flour').first()).toHaveValue('flour');
+  await page.getByPlaceholder('flour').first().fill('rye flour');
+  await page.getByPlaceholder('quick, vegetarian').fill('quick, bread');
+  await page.getByRole('button', { name: 'Save changes' }).click();
+
+  await expect(page.getByRole('heading', { name: title })).toBeVisible();
+  await expect(page.getByText('rye flour')).toBeVisible();
+  await expect(page.getByText('bread', { exact: true })).toBeVisible();
+});
+
+test('creating a recipe while logged out shows the login message', async ({ page }) => {
+  await page.goto('/recipes/new');
+  await page.getByLabel('Title').fill(`Logged out ${Date.now()}`);
+  await page.getByPlaceholder('flour').fill('water');
+  await page.locator('textarea').fill('Boil water.');
+  await page.getByRole('button', { name: 'Save recipe' }).click();
+
+  await expect(page.getByText('Please log in to do that')).toBeVisible();
 });

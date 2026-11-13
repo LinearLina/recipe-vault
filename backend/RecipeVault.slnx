@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RecipeVault.Api/RecipeVault.Api.csproj" />
+    <Project Path="src/RecipeVault.Application/RecipeVault.Application.csproj" />
+    <Project Path="src/RecipeVault.Domain/RecipeVault.Domain.csproj" />
+    <Project Path="src/RecipeVault.Infrastructure/RecipeVault.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RecipeVault.IntegrationTests/RecipeVault.IntegrationTests.csproj" />
+    <Project Path="tests/RecipeVault.UnitTests/RecipeVault.UnitTests.csproj" />
+  </Folder>
+</Solution>

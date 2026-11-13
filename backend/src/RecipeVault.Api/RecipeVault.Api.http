@@ -1,0 +1,36 @@
+# Quick manual checks with the VS Code REST Client or Visual Studio's .http support.
+@api = http://localhost:4000/api
+
+GET {{api}}/health
+
+###
+GET {{api}}/recipes?search=noodle
+
+###
+GET {{api}}/recipes/1/scaled?servings=4
+
+###
+POST {{api}}/signup
+Content-Type: application/json
+
+{ "email": "me@example.com", "password": "correct-horse" }
+
+###
+# @name login
+POST {{api}}/login
+Content-Type: application/json
+
+{ "email": "me@example.com", "password": "correct-horse" }
+
+###
+POST {{api}}/recipes
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "title": "Overnight oats",
+  "instructions": "Mix and refrigerate overnight.",
+  "servings": 1,
+  "ingredients": [ { "name": "rolled oats", "amount": 50, "unit": "g" } ],
+  "tags": [ "breakfast", "quick" ]
+}
