@@ -15,6 +15,7 @@ Update this when you take a shortcut, and close items in the PR that fixes them.
 | 6 | Units are free text (`g`, `grams`, `cups`) | Kept from the original schema | Can't convert units or total a shopping list | Introduce a unit value object with a known list |
 | 7 | Sample recipes have no owner and are read-only | Seeder runs before any user exists | Nobody can edit the sample recipes | Fine for a demo; seed an admin user if needed |
 | 8 | No rate limiting or request size limits beyond defaults | Not needed for a portfolio app yet | Abuse possible if deployed publicly | ASP.NET Core rate-limiting middleware |
+| 9 | Edit/Delete buttons show for recipes you don't own | Client doesn't know the current user's id | Clicking shows an error instead of the button being hidden (API correctly returns 403) | Return the user id at login and hide the buttons for non-owners |
 
 ## Fixed during the .NET migration
 
