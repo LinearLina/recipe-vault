@@ -75,6 +75,9 @@ test('editing a recipe keeps ingredient and tag changes', async ({ page, request
   await expect(page.getByRole('heading', { name: title })).toBeVisible();
 
   await page.getByRole('link', { name: 'Edit' }).click();
+  // The edit form loads the recipe after it opens. Wait for that, or the load overwrites what we type.
+  await expect(page.getByLabel('Title')).toHaveValue(title);
+  await expect(page.getByPlaceholder('flour').first()).toHaveValue('flour');
   await page.getByPlaceholder('flour').first().fill('rye flour');
   await page.getByPlaceholder('quick, vegetarian').fill('quick, bread');
   await page.getByRole('button', { name: 'Save changes' }).click();
